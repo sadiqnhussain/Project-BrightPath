@@ -1,9 +1,9 @@
-# BrightPath Learning — school-managed learning platform
+# BrightPath Learning
 
 A web-first, multi-tenant learning platform for children. Schools and educational organizations manage their own classes, teachers, students, courses and assignments. Students see published courses that their school has assigned to their class or directly to them.
 
 # Live project link
-
+https://brightpath-r4uk.onrender.com/
 
 #### Note: project is free hosted on render. so render may require a minute to reload the application on first visit.
 
