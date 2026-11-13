@@ -1,0 +1,61 @@
+{% extends 'core/base.html' %}
+{% block title %}
+  Family progress · BrightPath
+{% endblock %}
+{% block content %}
+  <section class="dashboard-hero">
+    <div>
+      <div class="eyebrow">FAMILY LEARNING SPACE</div><h1>A little progress, every day.</h1><p>See a helpful summary of learning for children linked to your account.</p>
+    </div>
+  </section>
+  {% if pending_links %}
+    <section class="panel pending-panel">
+      <div class="panel-heading">
+        <div>
+          <h2>Confirm a child link</h2><p>Your school has requested a guardian connection. Review and consent before progress is shared.</p>
+        </div>
+      </div>
+      {% for link in pending_links %}
+        <div class="pending-link-row">
+          <div>
+            <b>{{ link.student.user.display_name|default:link.student.user.username }}</b><small>{{ link.student.institution.name }} · requested {{ link.created_at|date:'M j, Y' }}</small>
+          </div>
+          <form method="post" action="{% url 'guardian_consent' link.verification_token %}">
+            {% csrf_token %}<label class="consent-label"><input type="checkbox" name="consent" value="yes" required />I confirm I am this child’s guardian and consent to this learning summary being shared with me.</label><button class="button primary small" type="submit">Confirm link</button>
+          </form>
+        </div>
+      {% endfor %}
+    </section>
+  {% endif %}
+  <div class="guardian-grid">
+    {% for s in summaries %}
+      <section class="guardian-card">
+        <div class="guardian-card-head">
+          <span class="avatar large">✦</span><div>
+            <h2>{{ s.link.student.user.display_name|default:s.link.student.user.username }}</h2><p>{{ s.link.student.institution.name }} · {{ s.link.student.classroom.name|default:'Class not assigned' }}</p>
+          </div>
+        </div>
+        <div class="guardian-stats">
+          <div>
+            <strong>{{ s.progress_count }}</strong><small>Lessons completed</small>
+          </div>
+          <div>
+            <strong>{{ s.points }}</strong><small>Learning points</small>
+          </div>
+        </div><h3>Recent learning</h3>{% for p in s.recent %}
+          <div class="simple-row">
+            <span class="status-dot"></span><div>
+              <b>{{ p.lesson.title }}</b><small>{{ p.lesson.course.title }} · {{ p.get_status_display }}</small>
+            </div>
+          </div>
+        {% empty %}
+          <p class="muted">Learning activity will appear here once a lesson is started.</p>
+        {% endfor %}
+        <form method="post" action="{% url 'guardian_revoke_link' s.link.pk %}" class="revoke-link-form">
+          {% csrf_token %}<button class="button small secondary" type="submit">Stop sharing this learning summary</button>
+        </form>
+      </section>
+    {% endfor %}
+  </div>
+  <p class="fine-print">This page shows summaries for verified guardian links only. Contact the school for class placement, course access or record corrections.</p>
+{% endblock %}

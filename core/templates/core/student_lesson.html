@@ -1,0 +1,66 @@
+{% extends 'core/base.html' %}
+{% block title %}
+  {{ lesson.title }} · BrightPath
+{% endblock %}
+{% block content %}
+  <a class="back-link" href="{% url 'student_course' lesson.course.pk %}">← Back to course</a><section class="lesson-shell">
+    <div class="lesson-topline">
+      <span class="pill">{{ lesson.course.subject }}</span><span class="muted">◷ {{ lesson.duration_minutes }} min</span>
+    </div>
+    <div class="lesson-heading">
+      <div class="lesson-big-icon">
+        {% if lesson.content_type == 'activity' %}
+          🧩
+        {% elif lesson.content_type == 'video' %}
+          ▶
+        {% elif lesson.content_type == 'audio' %}
+          ♫
+        {% elif lesson.content_type == 'quiz' %}
+          ✎
+        {% else %}
+          📖
+        {% endif %}
+      </div>
+      <div>
+        <div class="eyebrow">LESSON {{ lesson.order }}</div><h1>{{ lesson.title }}</h1>
+      </div>
+    </div>
+    <article class="lesson-content">
+      {% if lesson.body %}
+        {{ lesson.body|linebreaks }}
+      {% else %}
+        <p>Your teacher has added a learning activity. Take your time and ask a trusted adult if you need help.</p>
+      {% endif %}
+      {% if lesson.media_url %}
+        <p>
+          <a class="text-link" href="{{ lesson.media_url }}" target="_blank" rel="noopener noreferrer">Open learning media ↗</a>
+        </p>
+      {% endif %}
+    </article>
+    {% if questions %}
+      <section class="quiz-panel">
+        <div class="eyebrow">QUICK CHECK</div><h2>Show what you discovered</h2><p>Choose the answer that you think is best. It's okay to learn by trying.</p>
+        <form method="post">
+          {% csrf_token %}
+          <input type="hidden" name="action" value="quiz" />
+          {% for q in questions %}
+            <fieldset class="question">
+              <legend>{{ forloop.counter }}. {{ q.prompt }}</legend>
+              {% for choice in q.choices %}
+                <label class="choice"><input type="radio" name="q_{{ q.pk }}" value="{{ forloop.counter0 }}" required /><span>{{ choice }}</span></label>
+              {% endfor %}
+            </fieldset>
+          {% endfor %}<button class="button primary" type="submit">Check my answers <span>→</span></button>
+        </form>
+      </section>
+    {% else %}
+      <form method="post" class="lesson-complete-form">
+        {% csrf_token %}
+        <input type="hidden" name="action" value="complete" /><button class="button primary" type="submit">I finished this lesson ✓</button>
+      </form>
+    {% endif %}
+    <p class="report-footer">
+      <a class="text-link" href="{% url 'safety_report_lesson' lesson.course.pk lesson.pk %}">Report a problem with this lesson</a>
+    </p>
+  </section>
+{% endblock %}

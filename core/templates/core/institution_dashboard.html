@@ -1,0 +1,73 @@
+{% extends 'core/base.html' %}
+{% block title %}
+  {{ institution.name }} · BrightPath
+{% endblock %}
+{% block content %}
+  <section class="dashboard-hero">
+    <div>
+      <div class="eyebrow">YOUR SCHOOL LEARNING SPACE</div><h1>Welcome, {{ user.display_name|default:user.username }}.</h1><p>Everything your school needs to make learning happen.</p>
+      <div class="hero-meta">
+        <span>🏫 {{ institution.name }}</span><span class="status approved">{{ institution.get_status_display }}</span>
+      </div>
+    </div><a class="button primary" href="{% url 'course_create' %}">Create a course <span>→</span></a>
+  </section>
+  <div class="stat-grid">
+    <div class="stat-card">
+      <span>Active classes</span><strong>{{ class_count }}</strong><a href="{% url 'classroom_list' %}">Manage classes →</a>
+    </div>
+    <div class="stat-card">
+      <span>Students</span><strong>{{ student_count }}</strong><a href="{% url 'student_list' %}">View roster →</a>
+    </div>
+    <div class="stat-card">
+      <span>Courses</span><strong>{{ course_count }}</strong><a href="{% url 'course_list' %}">Manage courses →</a>
+    </div>
+    <div class="stat-card accent">
+      <span>Published</span><strong>{{ published_count }}</strong><a href="{% url 'assignment_create' %}">Assign learning →</a>
+    </div>
+  </div>
+  <section class="quick-grid">
+    <a class="quick-card" href="{% url 'academic_years' %}">
+      <span>◷</span><div>
+        <b>Academic years</b><small>Set up the school year</small>
+      </div><em>→</em>
+    </a><a class="quick-card" href="{% url 'classroom_create' %}">
+      <span>＋</span><div>
+        <b>Add a class</b><small>Organize students by grade</small>
+      </div><em>→</em>
+    </a><a class="quick-card" href="{% url 'student_create' %}">
+      <span>☺</span><div>
+        <b>Add a student</b><small>Create a school-managed login</small>
+      </div><em>→</em>
+    </a><a class="quick-card" href="{% url 'institution_reports' %}">
+      <span>▥</span><div>
+        <b>Learning reports</b><small>Track class progress</small>
+      </div><em>→</em>
+    </a><a class="quick-card" href="{% url 'safety_report_list' %}">
+      <span>⚑</span><div>
+        <b>Safety reports</b><small>Review content concerns</small>
+      </div><em>→</em>
+    </a><a class="quick-card" href="{% url 'staff_invitation_create' %}">
+      <span>✉</span><div>
+        <b>Invite staff</b><small>Bring teachers into your space</small>
+      </div><em>→</em>
+    </a><a class="quick-card" href="{% url 'assignment_create' %}">
+      <span>↗</span><div>
+        <b>Assign a course</b><small>Choose a class or student</small>
+      </div><em>→</em>
+    </a>
+  </section>
+  <section class="panel">
+    <div class="panel-heading">
+      <div>
+        <h2>Recently updated courses</h2><p>Drafts stay private until published and assigned.</p>
+      </div><a class="text-link" href="{% url 'course_list' %}">All courses →</a>
+    </div>
+    <div class="course-list compact">
+      {% for c in recent_courses %}
+        <a class="course-row" href="{% url 'course_detail' c.pk %}"><span class="course-emoji">{{ c.emoji }}</span><span class="course-info"><b>{{ c.title }}</b><small>{{ c.subject }} · {{ c.get_status_display }}</small></span><span class="arrow">→</span></a>
+      {% empty %}
+        <div class="empty-inline">No courses yet. Start with a short, engaging lesson.</div>
+      {% endfor %}
+    </div>
+  </section>
+{% endblock %}

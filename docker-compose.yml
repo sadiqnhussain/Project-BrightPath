@@ -1,0 +1,54 @@
+# Production-only stack. Local development uses SQLite directly with `python manage.py runserver`.
+services:
+  db:
+    image: postgres:16-alpine
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB:-kidslearning}
+      POSTGRES_USER: ${POSTGRES_USER:-kidslearning}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?Set POSTGRES_PASSWORD in your production environment}
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-kidslearning} -d ${POSTGRES_DB:-kidslearning}"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+    networks: [private]
+  web:
+    build: .
+    restart: unless-stopped
+    environment:
+      DJANGO_SECRET_KEY: ${DJANGO_SECRET_KEY:?Set a strong DJANGO_SECRET_KEY}
+      DJANGO_DEBUG: "0"
+      DJANGO_ALLOWED_HOSTS: ${DJANGO_ALLOWED_HOSTS:?Set DJANGO_ALLOWED_HOSTS}
+      DB_ENGINE: postgres
+      POSTGRES_DB: ${POSTGRES_DB:-kidslearning}
+      POSTGRES_USER: ${POSTGRES_USER:-kidslearning}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?Set POSTGRES_PASSWORD}
+      POSTGRES_HOST: db
+      POSTGRES_PORT: "5432"
+      SECURE_SSL_REDIRECT: "1"
+      DEFAULT_FROM_EMAIL: ${DEFAULT_FROM_EMAIL:?Set DEFAULT_FROM_EMAIL}
+      EMAIL_HOST: ${EMAIL_HOST:?Set EMAIL_HOST}
+      EMAIL_PORT: ${EMAIL_PORT:-587}
+      EMAIL_HOST_USER: ${EMAIL_HOST_USER:-}
+      EMAIL_HOST_PASSWORD: ${EMAIL_HOST_PASSWORD:?Set EMAIL_HOST_PASSWORD}
+      EMAIL_USE_TLS: ${EMAIL_USE_TLS:-1}
+    depends_on:
+      db:
+        condition: service_healthy
+    volumes:
+      - media_data:/app/media
+      - static_data:/app/staticfiles
+    networks: [private, edge]
+    # Publish only behind a TLS reverse proxy; do not expose Django directly to the internet.
+    expose: ["8000"]
+networks:
+  private:
+    internal: true
+  edge:
+volumes:
+  postgres_data:
+  media_data:
+  static_data:

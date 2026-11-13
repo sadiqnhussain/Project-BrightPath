@@ -1,0 +1,41 @@
+{% extends 'core/base.html' %}
+{% block title %}
+  Teacher space · BrightPath
+{% endblock %}
+{% block content %}
+  <section class="dashboard-hero">
+    <div>
+      <div class="eyebrow">TEACHER WORKSPACE · {{ institution.name }}</div><h1>Let's help learning grow.</h1><p>Create clear, engaging lessons and guide students through their learning path.</p>
+    </div><a class="button primary" href="{% url 'course_create' %}">Create course <span>→</span></a>
+  </section>
+  <div class="two-col">
+    <section class="panel">
+      <div class="panel-heading">
+        <div>
+          <h2>Your courses</h2><p>Draft, refine and publish course content.</p>
+        </div><a class="text-link" href="{% url 'institution_reports' %}">Learning reports →</a>
+      </div>
+      {% for c in courses %}
+        <a class="course-row" href="{% url 'course_detail' c.pk %}"><span class="course-emoji">{{ c.emoji }}</span><span class="course-info"><b>{{ c.title }}</b><small>{{ c.subject }} · {{ c.get_status_display }}</small></span><span>→</span></a>
+      {% empty %}
+        <div class="empty-inline">Your first course can start with one small lesson.</div>
+      {% endfor %}
+    </section>
+    <section class="panel">
+      <div class="panel-heading">
+        <div>
+          <h2>Your classes</h2><p>Only classes assigned to you.</p>
+        </div>
+      </div>
+      {% for c in classrooms %}
+        <div class="simple-row">
+          <span class="class-icon">▦</span><div>
+            <b>{{ c.name }}</b><small>{{ c.grade_level }}</small>
+          </div>
+        </div>
+      {% empty %}
+        <div class="empty-inline">Ask your school administrator to assign your classes.</div>
+      {% endfor %}
+    </section>
+  </div>
+{% endblock %}

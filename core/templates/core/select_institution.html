@@ -1,0 +1,11 @@
+{% extends 'core/base.html' %}
+{% block content %}
+  <section class="content-head">
+    <div class="eyebrow">YOUR WORKSPACES</div><h1>Choose a learning space</h1><p>Select the school or organization you want to manage.</p>
+  </section>
+  <div class="cards-grid">
+    {% for m in memberships %}
+      <a class="workspace-card" href="{% url 'dashboard' %}?institution={{ m.institution_id }}"><span class="workspace-icon">🏫</span><h3>{{ m.institution.name }}</h3><span class="pill">{{ m.get_role_display }}</span><span class="text-link">Open workspace →</span></a>
+    {% endfor %}
+  </div>
+{% endblock %}

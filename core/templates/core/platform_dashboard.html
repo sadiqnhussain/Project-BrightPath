@@ -1,0 +1,62 @@
+{% extends 'core/base.html' %}
+{% block title %}
+  Platform overview · BrightPath
+{% endblock %}
+{% block content %}
+  <section class="dashboard-hero">
+    <div>
+      <div class="eyebrow">PLATFORM ADMINISTRATION</div><h1>Good morning, {{ user.display_name|default:user.username }}.</h1><p>Keep learning spaces safe, approved and running smoothly.</p>
+    </div>
+    <div class="hero-actions">
+      <a class="button primary" href="{% url 'platform_institutions' %}?status=pending">Review applications <span>→</span></a><a class="button secondary" href="{% url 'safety_report_list' %}">Safety reports</a>
+    </div>
+  </section>
+  <div class="stat-grid">
+    <div class="stat-card">
+      <span>Pending applications</span><strong>{{ pending_count }}</strong><small>Need review</small>
+    </div>
+    <div class="stat-card">
+      <span>Institutions shown</span><strong>{{ institutions|length }}</strong><small>Recent applications</small>
+    </div>
+    <div class="stat-card">
+      <span>Safety first</span><strong>✓</strong><small>Review before activation</small>
+    </div>
+  </div>
+  <section class="panel">
+    <div class="panel-heading">
+      <div>
+        <h2>Recent institutions</h2><p>Institution access is activated only after review.</p>
+      </div><a class="text-link" href="{% url 'platform_institutions' %}?status=pending">View queue →</a>
+    </div>
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>Institution</th>
+            <th>Type</th>
+            <th>Submitted</th>
+            <th>Status</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for i in institutions %}
+            <tr>
+              <td>
+                <strong>{{ i.name }}</strong><small>{{ i.contact_email }}</small>
+              </td>
+              <td>{{ i.get_kind_display }}</td>
+              <td>{{ i.created_at|date:'M j, Y' }}</td>
+              <td>
+                <span class="status {{ i.status }}">{{ i.get_status_display }}</span>
+              </td>
+            </tr>
+          {% empty %}
+            <tr>
+              <td colspan="4">No institutions yet.</td>
+            </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </section>
+{% endblock %}

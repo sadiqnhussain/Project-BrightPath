@@ -1,0 +1,107 @@
+{% extends 'core/base.html' %}
+{% block title %}
+  Invite staff · BrightPath
+{% endblock %}
+{% block content %}
+  <section class="form-shell narrow">
+    <div class="eyebrow">{{ institution.name }}</div><h1>Invite your team</h1><p class="lead">Give a teacher or administrator their own account. Invitations expire after seven days and only grant the selected role in this institution.</p>
+    <div class="form-card">
+      <form method="post">
+        {% csrf_token %}
+        {% for field in form %}
+          <div class="field">
+            <label>{{ field.label }}</label>{{ field }}{% if field.errors %}
+              <div class="error">{{ field.errors }}</div>
+            {% endif %}
+          </div>
+        {% endfor %}<button class="button primary" type="submit">Send invitation →</button>
+      </form>
+    </div>
+  </section>
+  <section class="panel">
+    <div class="panel-heading">
+      <div>
+        <h2>Current team</h2><p>Access is limited to this institution. Deactivation takes effect immediately for this membership.</p>
+      </div>
+    </div>
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>Staff member</th>
+            <th>Role</th>
+            <th>Since</th>
+            <th>Action</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for m in members %}
+            <tr>
+              <td>
+                <strong>{{ m.user.display_name|default:m.user.username }}</strong><small>{{ m.user.email }}</small>
+              </td>
+              <td>{{ m.get_role_display }}</td>
+              <td>{{ m.created_at|date:'M j, Y' }}</td>
+              <td>
+                {% if m.pk in can_deactivate_ids %}
+                  <form method="post" action="{% url 'staff_membership_deactivate' m.pk %}">
+                    {% csrf_token %}<button class="button small danger" type="submit">Deactivate</button>
+                  </form>
+                {% else %}
+                  <span class="pill">Protected</span>
+                {% endif %}
+              </td>
+            </tr>
+          {% empty %}
+            <tr>
+              <td colspan="4">No staff members yet.</td>
+            </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </section>
+  <section class="panel">
+    <div class="panel-heading">
+      <div>
+        <h2>Recent invitations</h2><p>Only status and recipient are shown; invitation tokens are never listed here.</p>
+      </div>
+    </div>
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>Email</th>
+            <th>Role</th>
+            <th>Sent</th>
+            <th>Expires</th>
+            <th>Status</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for i in invitations %}
+            <tr>
+              <td>{{ i.email }}</td>
+              <td>{{ i.get_role_display }}</td>
+              <td>{{ i.created_at|date:'M j, Y' }}</td>
+              <td>{{ i.expires_at|date:'M j, Y' }}</td>
+              <td>
+                {% if i.accepted_at %}
+                  <span class="status approved">Accepted</span>
+                {% elif i.expires_at < now %}
+                  <span class="status rejected">Expired</span>
+                {% else %}
+                  <span class="status pending">Pending</span>
+                {% endif %}
+              </td>
+            </tr>
+          {% empty %}
+            <tr>
+              <td colspan="5">No invitations yet.</td>
+            </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </section>
+{% endblock %}

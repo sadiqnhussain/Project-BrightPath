@@ -1,0 +1,19 @@
+{% extends 'core/base.html' %}
+{% block title %}
+  Application pending · BrightPath
+{% endblock %}
+{% block content %}
+  <section class="empty-state">
+    <div class="empty-icon">🏫</div>
+    <div class="eyebrow">LEARNING SPACE REVIEW</div><h1>Your school is being reviewed</h1><p>Your account is ready, but school tools stay locked until the platform team approves the institution. We'll update access after the review is complete.</p>
+    <div class="pending-institutions">
+      {% for i in institutions %}
+        <div class="simple-row">
+          <span class="class-icon">◷</span><div>
+            <b>{{ i.name }}</b><small>{{ i.get_status_display }} · submitted {{ i.created_at|date:'M j, Y' }}</small>
+          </div>
+        </div>
+      {% endfor %}
+    </div><a class="button secondary" href="{% url 'home' %}">Back to home</a>
+  </section>
+{% endblock %}

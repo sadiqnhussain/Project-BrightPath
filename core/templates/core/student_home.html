@@ -1,0 +1,64 @@
+{% extends 'core/base.html' %}
+{% block title %}
+  My learning · BrightPath
+{% endblock %}
+{% block content %}
+  <section class="student-welcome">
+    <div>
+      <div class="eyebrow">YOUR LEARNING SPACE · {{ profile.institution.name }}</div><h1>Hi, {{ user.display_name|default:user.username }}! <span class="wave">✦</span></h1><p>What would you like to discover today?</p>
+      <div class="student-chips">
+        <span>▦ {{ profile.classroom.name|default:'Your class' }}</span><span>🌱 {{ completed_count }} lessons completed</span><span>⭐ {{ points }} points</span>
+      </div>
+    </div>
+    <div class="welcome-character" aria-hidden="true">
+      <div class="character-spark">✦</div>
+      <div class="character-face">
+        <span class="eye eye-left"></span><span class="eye eye-right"></span><span class="smile"></span>
+      </div>
+      <div class="character-body"></div>
+    </div>
+  </section>
+  <section class="student-section">
+    <div class="section-heading">
+      <div>
+        <div class="eyebrow">YOUR LEARNING PATH</div><h2>Courses picked for you</h2>
+      </div><span class="pill">{{ course_data|length }} available</span>
+    </div>
+    <div class="student-course-grid">
+      {% for item in course_data %}
+        <a class="student-course-card" href="{% url 'student_course' item.course.pk %}">
+          <div class="student-card-art art-{{ forloop.counter0|divisibleby:3 }}">
+            <span>{{ item.course.emoji }}</span><i>✦</i>
+          </div>
+          <div class="student-card-body">
+            <div class="eyebrow">{{ item.course.subject }}</div><h3>{{ item.course.title }}</h3><p>{{ item.course.summary }}</p>
+            <div class="progress-label">
+              <span>{{ item.completed }} of {{ item.total }} lessons</span><b>{{ item.percent }}%</b>
+            </div>
+            <div class="progress-track">
+              <span style="width:{{ item.percent }}%"></span>
+            </div>
+            <div class="student-card-bottom">
+              <span>◷ {{ item.course.estimated_minutes }} min</span><span class="button small primary">
+                {% if item.percent %}
+                  Keep going
+                {% else %}
+                  Start learning
+                {% endif %}→
+              </span>
+            </div>
+          </div>
+        </a>
+      {% empty %}
+        <div class="empty-state student-empty">
+          <div class="empty-icon">🪁</div><h2>Your next adventure is on its way</h2><p>Your school hasn't assigned a course yet. Check back soon or ask your teacher.</p>
+        </div>
+      {% endfor %}
+    </div>
+  </section>
+  <section class="student-tip">
+    <span>💡</span><div>
+      <b>A little learning goes a long way</b><p>Try one short lesson, take a break, and celebrate what you learned.</p>
+    </div>
+  </section>
+{% endblock %}

@@ -1,0 +1,9 @@
+{% extends 'core/base.html' %}
+{% block content %}
+  <section class="empty-state">
+    <div class="success-orb">✓</div>
+    <div class="eyebrow">APPLICATION RECEIVED</div><h1>Thanks for reaching out!</h1><p>
+      <strong>{{ institution.name }}</strong> is waiting for review. The account you created can sign in, but institution features stay unavailable until approval.
+    </p><a class="button primary" href="{% url 'login' %}">Continue to sign in</a>
+  </section>
+{% endblock %}

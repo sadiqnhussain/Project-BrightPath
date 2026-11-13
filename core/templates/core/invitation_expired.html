@@ -1,0 +1,6 @@
+{% extends 'core/base.html' %}
+{% block content %}
+  <section class="empty-state">
+    <div class="empty-icon">⌛</div><h1>This invitation is no longer active</h1><p>It may have expired, already been used, or the institution may no longer be active. Ask the institution administrator to send a new invitation.</p><a class="button secondary" href="{% url 'home' %}">Back to home</a>
+  </section>
+{% endblock %}

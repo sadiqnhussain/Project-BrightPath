@@ -1,0 +1,32 @@
+{% extends 'core/base.html' %}
+{% block title %}
+  Register your institution · BrightPath
+{% endblock %}
+{% block content %}
+  <section class="form-shell">
+    <div class="eyebrow">FOR SCHOOLS & ORGANIZATIONS</div><h1>Create your learning space</h1><p class="lead">Apply to manage your own classes, teachers, students and learning content. Your space stays private while our team reviews the application.</p>
+    <div class="steps">
+      <span class="step active">1 <small>Apply</small></span><i></i><span class="step">2 <small>Review</small></span><i></i><span class="step">3 <small>Set up</small></span>
+    </div>
+    <div class="form-card wide">
+      <form method="post">
+        {% csrf_token %}
+        {% for field in form %}
+          <div class="field {% if field.name == 'description' %}field-wide{% endif %}">
+            <label for="{{ field.id_for_label }}">
+              {{ field.label }}{% if field.field.required %}
+                <span class="required">*</span>
+              {% endif %}
+            </label>{{ field }}{% if field.help_text %}
+              <small class="help">{{ field.help_text|safe }}</small>
+            {% endif %}
+            {% if field.errors %}
+              <div class="error">{{ field.errors }}</div>
+            {% endif %}
+          </div>
+        {% endfor %}<button class="button primary" type="submit">Submit application <span>→</span></button>
+      </form>
+    </div>
+    <p class="fine-print">Only submit information you are authorized to provide. Your learning space will not activate until approved.</p>
+  </section>
+{% endblock %}

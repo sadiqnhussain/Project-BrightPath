@@ -1,0 +1,65 @@
+{% extends 'core/base.html' %}
+{% block title %}
+  Academic years · BrightPath
+{% endblock %}
+{% block content %}
+  <section class="dashboard-hero">
+    <div>
+      <div class="eyebrow">{{ institution.name }}</div><h1>Academic years</h1><p>Keep classes and enrollment organized by school year.</p>
+    </div>
+  </section>
+  <div class="two-col">
+    <section class="panel">
+      <div class="panel-heading">
+        <div>
+          <h2>School years</h2><p>Only one year should be active at a time.</p>
+        </div>
+      </div>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>Name</th>
+              <th>Dates</th>
+              <th>Status</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for y in years %}
+              <tr>
+                <td>
+                  <strong>{{ y.name }}</strong>
+                </td>
+                <td>{{ y.starts_on|date:'M j, Y'|default:'—' }} – {{ y.ends_on|date:'M j, Y'|default:'—' }}</td>
+                <td>
+                  {% if y.is_active %}
+                    <span class="status approved">Active</span>
+                  {% else %}
+                    <span class="status draft">Archived / inactive</span>
+                  {% endif %}
+                </td>
+              </tr>
+            {% empty %}
+              <tr>
+                <td colspan="3">No academic years yet.</td>
+              </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </section>
+    <section class="form-card">
+      <h2>Add an academic year</h2><p class="muted">For example, 2026–2027.</p>
+      <form method="post">
+        {% csrf_token %}
+        {% for field in form %}
+          <div class="field">
+            <label>{{ field.label }}</label>{{ field }}{% if field.errors %}
+              <div class="error">{{ field.errors }}</div>
+            {% endif %}
+          </div>
+        {% endfor %}<button class="button primary" type="submit">Save academic year →</button>
+      </form>
+    </section>
+  </div>
+{% endblock %}

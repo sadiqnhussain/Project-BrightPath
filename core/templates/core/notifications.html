@@ -1,0 +1,72 @@
+{% extends 'core/base.html' %}
+{% block title %}
+  Notifications · BrightPath
+{% endblock %}
+{% block content %}
+  <section class="content-head">
+    <div>
+      <div class="eyebrow">MESSAGES & UPDATES</div><h1>Notifications</h1><p class="lead">School announcements and course updates in one place.</p>
+    </div>
+  </section>
+  {% for membership in memberships %}
+    {% if membership.role == 'owner' or membership.role == 'admin' or membership.role == 'teacher' %}
+      <section class="panel announcement-compose">
+        <div class="panel-heading">
+          <h2>Send an announcement</h2>
+        </div>
+        <form method="post" action="{% url 'announcement_create' %}" class="announcement-form">
+          {% csrf_token %}
+          <input type="hidden" name="institution_id" value="{{ membership.institution_id }}" /><label>Title<input name="title" maxlength="180" required /></label><label>Message<textarea name="body" rows="4" maxlength="5000" required></textarea></label>
+          {% if membership.role == 'owner' or membership.role == 'admin' %}
+            <label>
+              Audience<select name="audience" required>
+                <option value="all">All students and teachers</option>
+                <option value="teachers">All teachers</option>
+                <option value="teacher">A specific teacher</option>
+                <option value="students">All students</option>
+                <option value="student">A specific student</option>
+              </select>
+            </label><label>Recipient user ID (only for specific teacher/student)<input name="target_id" type="number" min="1" /></label>
+          {% else %}
+            <label>
+              Course<select name="course_id" required>
+                <option value="all">Students enrolled in all my courses</option>
+                {% for course in courses %}
+                  <option value="{{ course.id }}">{{ course.title }}</option>
+                {% endfor %}
+              </select>
+            </label>
+          {% endif %}<button class="button primary" type="submit">Send announcement</button>
+        </form>
+      </section>
+    {% endif %}
+  {% endfor %}
+  <section class="notification-list">
+    {% for delivery in deliveries %}
+      <article class="notification-card">
+        <div class="notification-meta">
+          <span>{{ delivery.announcement.institution.name }}</span><time>{{ delivery.announcement.created_at|date:'M j, Y · g:i a' }}</time>
+        </div><h2>{{ delivery.announcement.title }}</h2><p class="notification-body">{{ delivery.announcement.body|linebreaksbr }}</p><small>Sent by {{ delivery.announcement.author.display_name|default:delivery.announcement.author.username }}</small>
+        {% if delivery.announcement.comments.all %}
+          <div class="notification-comments">
+            <h3>Comments</h3>{% for comment in delivery.announcement.comments.all %}
+              <div class="notification-comment">
+                <b>{{ comment.author.display_name|default:comment.author.username }}</b><small>{{ comment.created_at|date:'M j, Y · g:i a' }}</small><p>{{ comment.body|linebreaksbr }}</p>
+              </div>
+            {% endfor %}
+          </div>
+        {% endif %}
+        {% if delivery.can_comment %}
+          <form method="post" class="comment-form">
+            {% csrf_token %}
+            <input type="hidden" name="delivery_id" value="{{ delivery.id }}" /><label>Add a teacher comment<input name="body" maxlength="3000" placeholder="Comment…" required /></label><button class="button secondary small" type="submit">Comment</button>
+          </form>
+        {% endif %}
+      </article>
+    {% empty %}
+      <div class="panel empty-state">
+        <h2>No notifications yet</h2><p>Announcements sent to your classes or institution will appear here.</p>
+      </div>
+    {% endfor %}
+  </section>
+{% endblock %}

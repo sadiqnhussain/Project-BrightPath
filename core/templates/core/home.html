@@ -1,0 +1,74 @@
+{% extends 'core/base.html' %}
+{% load static %}
+{% block title %}
+  BrightPath Learning · School-connected learning
+{% endblock %}
+{% block content %}
+  <section class="hero">
+    <div class="hero-copy">
+      <div class="eyebrow">
+        <span class="eyebrow-dot"></span> SCHOOL-CONNECTED LEARNING
+      </div><h1>Curious minds.<br /><span>Brighter futures.</span></h1><p class="hero-lead">A safe, joyful learning space where schools share great lessons and students keep exploring at home.</p>
+      <div class="hero-actions">
+        <a class="button primary" href="{% url 'institution_apply' %}">Register a school <span>→</span></a><a class="button secondary" href="{% url 'login' %}">Sign in to learn</a>
+      </div>
+      <div class="trust-row">
+        <span>✓ School-managed courses</span><span>✓ Class-based access</span><span>✓ Child-first design</span>
+      </div>
+    </div>
+    <div class="hero-art image-placeholder" role="img" aria-label="Learning illustration placeholder">
+      <img src="{% static 'core/hero cover img brightpath.png' %}" alt="hero cover img" />
+    </div>
+  </section>
+  <section class="callout">
+  <div class="callout-icon">🔑</div>
+
+  <div>
+    <h2>Try the demo platform instantly</h2>
+
+    <p>
+      Explore the complete school experience with preloaded demo data including
+      1 school, 3 teachers, 10 students, 5 courses, lessons, quizzes and classroom assignments.
+    </p>
+
+    <p>
+      <strong>Demo Password for all:</strong> <code>Demopass1234</code>
+    </p>
+
+    <p>
+      <strong>School Admin:</strong> school-admin <strong> | Teachers:</strong> teacher01, teacher02, teacher03<br>
+      <strong>Students:</strong> student01, student02 ... student10 <strong> | Guardians:</strong> guardian01 – guardian05
+    </p>
+  </div>
+
+  <a href="{% url 'login' %}" class="text-link">
+    Sign in to demo →
+  </a>
+</section>
+
+  <section class="section">
+    <div class="section-heading">
+      <div>
+        <div class="eyebrow">MADE FOR EVERY LEARNER</div><h2>A learning world that grows with them</h2>
+      </div>
+      <p>Schools lead the learning. Children explore at their own pace. Families stay connected.</p>
+    </div>
+    <div class="feature-grid">
+      <article class="feature-card mint">
+        <div class="feature-icon">🏫</div><h3>School-managed</h3><p>Each school has its own space, classes, teachers and courses. Private learning stays private.</p>
+      </article>
+      <article class="feature-card lilac">
+        <div class="feature-icon">🧩</div><h3>Just-right learning</h3><p>Students see courses assigned to their class or directly to them—not a confusing public catalogue.</p>
+      </article>
+      <article class="feature-card peach">
+        <div class="feature-icon">🌱</div><h3>Progress that feels good</h3><p>Short lessons, kind feedback and meaningful milestones make extra study feel achievable.</p>
+      </article>
+    </div>
+  </section>
+  <section class="callout">
+    <div class="callout-icon">💛</div>
+    <div>
+      <h2>Designed around children's wellbeing</h2><p>No public student profiles or open child-to-child messaging. School-managed access, careful permissions and guardian oversight are built into the plan.</p>
+    </div><a href="{% url 'institution_apply' %}" class="text-link">Bring your school →</a>
+  </section>
+{% endblock %}

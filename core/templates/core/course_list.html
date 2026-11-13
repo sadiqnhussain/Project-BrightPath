@@ -1,0 +1,31 @@
+{% extends 'core/base.html' %}
+{% block title %}
+  Courses · BrightPath
+{% endblock %}
+{% block content %}
+  <section class="dashboard-hero">
+    <div>
+      <div class="eyebrow">{{ institution.name }}</div><h1>Course library</h1><p>Build learning for your students. Courses are private to your institution.</p>
+    </div>
+    {% if can_create %}
+      <a class="button primary" href="{% url 'course_create' %}">＋ Create course</a>
+    {% endif %}
+  </section>
+  <div class="course-grid">
+    {% for c in courses %}
+      <a class="learning-card" href="{% url 'course_detail' c.pk %}">
+        <div class="learning-card-top">
+          <span class="course-emoji large">{{ c.emoji }}</span><span class="status {{ c.status }}">{{ c.get_status_display }}</span>
+        </div>
+        <div class="eyebrow">{{ c.subject }} · {{ c.language|upper }}</div><h3>{{ c.title }}</h3><p>{{ c.summary }}</p>
+        <div class="card-footer">
+          <span>{{ c.lessons.count }} lessons</span><span>{{ c.estimated_minutes }} min</span><span class="arrow">→</span>
+        </div>
+      </a>
+    {% empty %}
+      <div class="empty-state">
+        <div class="empty-icon">📚</div><h2>Your course library starts here</h2><p>Create a course, add short lessons and publish it when ready.</p><a class="button primary" href="{% url 'course_create' %}">Create your first course</a>
+      </div>
+    {% endfor %}
+  </div>
+{% endblock %}

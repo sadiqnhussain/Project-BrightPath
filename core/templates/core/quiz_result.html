@@ -1,0 +1,48 @@
+{% extends 'core/base.html' %}
+{% block title %}
+  Activity complete · BrightPath
+{% endblock %}
+{% block content %}
+  <section class="result-card">
+    <div class="success-orb">
+      {% if max_score and score == max_score %}
+        ★
+      {% else %}
+        ✓
+      {% endif %}
+    </div>
+    <div class="eyebrow">ACTIVITY COMPLETE</div><h1>You gave it a go!</h1><p class="result-score">
+      {{ score }} <span>/ {{ max_score }}</span>
+    </p>
+    <p>
+      {% if max_score and score == max_score %}
+        Amazing work! You got every question right.
+      {% elif max_score %}
+        Every try helps your brain grow. Review the explanations and keep learning.
+      {% else %}
+        Your activity is complete.
+      {% endif %}
+    </p>
+    <div class="result-feedback">
+      {% for item in feedback_rows %}
+        <div class="feedback-row">
+          <span class="feedback-mark {% if not item.correct %}needs-practice{% endif %}">
+            {% if item.correct %}
+              ✓
+            {% else %}
+              ↻
+            {% endif %}
+          </span><div>
+            <b>{{ item.question.prompt }}</b><small>
+              {% if item.correct %}
+                You got it!
+              {% else %}
+                The best answer was: {{ item.correct_choice }}.
+              {% endif %}{{ item.question.explanation|default:'Keep practicing—you are making progress.' }}
+            </small>
+          </div>
+        </div>
+      {% endfor %}
+    </div><a class="button primary" href="{% url 'student_course' lesson.course.pk %}">Back to course →</a><a class="text-link" href="{% url 'student_home' %}">Return to my learning</a>
+  </section>
+{% endblock %}

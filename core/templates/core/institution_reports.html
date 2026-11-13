@@ -1,0 +1,67 @@
+{% extends 'core/base.html' %}
+{% block title %}
+  Learning reports · BrightPath
+{% endblock %}
+{% block content %}
+  <section class="dashboard-hero">
+    <div>
+      <div class="eyebrow">{{ institution.name }} · LEARNING INSIGHTS</div><h1>Progress, not pressure.</h1><p>Use these summaries to support students. They are indicators for conversation, not labels or rankings.</p>
+    </div>
+  </section>
+  <div class="panel">
+    <div class="panel-heading">
+      <div>
+        <h2>Student learning overview</h2><p>
+          Only students in your institution{% if not is_admin %} and assigned classes{% endif %}. Data is limited to learning activity needed for support.
+        </p>
+      </div>
+    </div>
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>Student</th>
+            <th>Class</th>
+            <th>Courses available</th>
+            <th>Required lessons</th>
+            <th>Completed</th>
+            <th>Progress</th>
+            <th>Quiz average</th>
+            <th>Last activity</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for r in rows %}
+            <tr>
+              <td>
+                <strong>{{ r.student.user.display_name|default:r.student.user.username }}</strong><small>School login: {{ r.student.user.username }}</small>
+              </td>
+              <td>{{ r.student.classroom.name|default:'Not assigned' }}</td>
+              <td>{{ r.course_count }}</td>
+              <td>{{ r.required_lessons }}</td>
+              <td>{{ r.completed }}</td>
+              <td>
+                <div class="report-progress">
+                  <span style="width:{{ r.percent }}%"></span>
+                </div><small>{{ r.percent }}%</small>
+              </td>
+              <td>
+                {% if r.has_quiz_average %}
+                  {{ r.quiz_average }}%
+                {% else %}
+                  —
+                {% endif %}
+              </td>
+              <td>{{ r.last_activity|date:'M j, Y H:i'|default:'No activity yet' }}</td>
+            </tr>
+          {% empty %}
+            <tr>
+              <td colspan="8">No students are available in this report yet.</td>
+            </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+  <p class="fine-print">Avoid using these summaries as automated decisions about a child. Interpret progress with teachers and guardians, and only share reports with authorized people.</p>
+{% endblock %}
