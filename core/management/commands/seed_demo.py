@@ -1,3 +1,4 @@
+import os
 from django.core.management.base import BaseCommand
 from django.contrib.auth import get_user_model
 from django.utils import timezone
@@ -50,6 +51,15 @@ class Command(BaseCommand):
             "School Admin",
             User.AccountType.ADULT,
         )
+        
+        site_admin_user = os.getenv("DJANGO_SUPERUSER_USERNAME")
+        site_admin_user = (
+            User.objects.filter(username=site_admin_user).first()
+            if site_admin_user
+            else 
+            User.objects.filter(is_superuser=True).first()
+            )
+
 
         inst, _ = Institution.objects.get_or_create(
             slug="demo-learning-school",
@@ -63,7 +73,7 @@ class Command(BaseCommand):
                     "courses, classrooms, assignments, quizzes and reporting."
                 ),
                 "status": Institution.Status.APPROVED,
-                "approved_by": "Platfrom adminstration",
+                "approved_by": site_admin_user,
                 "approved_at": timezone.now(),
             },
         )
