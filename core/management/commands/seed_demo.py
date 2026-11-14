@@ -22,20 +22,9 @@ User = get_user_model()
 class Command(BaseCommand):
     help = "Create clearly marked local demo accounts and sample learning content. Never run on production."
 
-    def add_arguments(self, parser):
-        parser.add_argument(
-            "--password",
-            required=True,
-            help="Temporary password for demo accounts (12+ characters).",
-        )
-
+    
     def handle(self, *args, **opts):
-        password = opts["password"]
-        if len(password) < 12:
-            self.stderr.write(
-                self.style.ERROR("Password must be at least 12 characters.")
-            )
-            return
+        password = "DemoPass1234"
         if not settings.DEBUG:
             self.stderr.write(
                 self.style.ERROR("Refusing to seed demo accounts when DEBUG is off.")
