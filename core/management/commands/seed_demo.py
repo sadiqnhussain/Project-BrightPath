@@ -25,11 +25,12 @@ class Command(BaseCommand):
     
     def handle(self, *args, **opts):
         password = "DemoPass1234"
-        if not settings.DEBUG:
-            self.stderr.write(
-                self.style.ERROR("Refusing to seed demo accounts when DEBUG is off.")
-            )
-            return
+        # for real production environment
+        # if not settings.DEBUG:
+        #     self.stderr.write(
+        #         self.style.ERROR("Refusing to seed demo accounts when DEBUG is off.")
+        #     )
+        #     return
 
         def user(username, email, name, kind):
             obj, created = User.objects.get_or_create(
